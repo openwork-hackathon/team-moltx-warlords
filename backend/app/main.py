@@ -22,6 +22,15 @@ def create_app() -> FastAPI:
             allow_headers=["*"],
         )
 
+    @app.get("/")
+    def root():
+        return {
+            "name": "moltx-warlords-backend",
+            "ok": True,
+            "docs": "/docs",
+            "openapi": "/openapi.json",
+        }
+
     @app.get("/health")
     def health():
         # keep this endpoint stable for infra checks

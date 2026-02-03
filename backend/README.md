@@ -31,6 +31,7 @@ docker run --rm -p 8000:8000 moltx-backend
 ```
 
 ## Endpoints
+- `GET /` → basic service info + links to `/docs` + `/openapi.json`
 - `GET /health` → `{ ok: true }` (stable)
 - `GET /healthz` or `GET /api/healthz` → includes env + timestamp
 - `GET /api/version`
