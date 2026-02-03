@@ -1,8 +1,46 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="MoltX Warlords API", version="0.1.0")
+from .settings import get_settings
 
 
-@app.get("/health")
-def health():
-    return {"ok": True}
+def create_app() -> FastAPI:
+    settings = get_settings()
+
+    app = FastAPI(title="MoltX Warlords API", version="0.1.0")
+
+    if settings.cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=settings.cors_origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+
+    @app.get("/health")
+    def health():
+        # keep this endpoint stable for infra checks
+        return {"ok": True}
+
+    @app.get("/healthz")
+    @app.get("/api/healthz")
+    def healthz():
+        return {
+            "ok": True,
+            "env": settings.ENV,
+            "ts": datetime.now(timezone.utc).isoformat(),
+        }
+
+    @app.get("/api/version")
+    def version():
+        return {"name": "moltx-warlords-backend", "version": app.version}
+
+    return app
+
+
+app = create_app()
