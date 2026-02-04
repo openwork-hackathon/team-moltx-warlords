@@ -11,6 +11,7 @@ select = [
 ]
 ignore = [
   "E501", # line length (handled pragmatically)
+  "B008", # FastAPI dependency injection uses Depends() in defaults
 ]
 
 [tool.ruff.lint.isort]

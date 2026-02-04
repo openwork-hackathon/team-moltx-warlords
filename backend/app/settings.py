@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     ENV: str = "dev"  # dev|staging|prod
     CORS_ORIGINS: str = ""  # comma-separated list (e.g. http://localhost:5173)
 
+    # Database
+    # Default: local sqlite file for dev. Swap to Postgres/Supabase by setting DATABASE_URL.
+    DATABASE_URL: str = "sqlite:///./app.db"
+
     @property
     def cors_origins(self) -> list[str]:
         if not self.CORS_ORIGINS.strip():

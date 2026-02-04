@@ -1,17 +1,26 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .api import router as api_router
+from .db import init_db
 from .settings import get_settings
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
 
-    app = FastAPI(title="MoltX Warlords API", version="0.1.0")
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        # Ensure local/dev sqlite schema exists. In prod we may use migrations.
+        init_db()
+        yield
+
+    app = FastAPI(title="MoltX Warlords API", version="0.1.0", lifespan=lifespan)
 
     if settings.cors_origins:
         app.add_middleware(
@@ -48,6 +57,8 @@ def create_app() -> FastAPI:
     @app.get("/api/version")
     def version():
         return {"name": "moltx-warlords-backend", "version": app.version}
+
+    app.include_router(api_router)
 
     return app
 
