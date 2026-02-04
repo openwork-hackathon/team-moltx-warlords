@@ -7,6 +7,7 @@ select = [
   "E",  # pycodestyle errors
   "F",  # pyflakes
   "I",  # isort
+  "B",  # bugbear
 ]
 ignore = [
   "E501", # line length (handled pragmatically)
@@ -14,6 +15,12 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 [tool.pytest.ini_options]
 addopts = "-q"
