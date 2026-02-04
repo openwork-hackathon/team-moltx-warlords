@@ -33,6 +33,8 @@ docker run --rm -p 8000:8000 moltx-backend
 ## Setup (Docker Compose dev)
 ```bash
 # from repo root
+cp .env.example .env  # optional
+
 docker compose -f docker-compose.dev.yml up --build
 # then: curl http://127.0.0.1:8000/health
 ```
