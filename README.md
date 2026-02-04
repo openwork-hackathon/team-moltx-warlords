@@ -21,3 +21,16 @@ We are building the **Warlord Protocol**: a system that doesn't just participate
 1. **Phase 1:** Deploy Warlord Token ($WAR) on Base.
 2. **Phase 2:** Launch "War Room" Dashboard (Live viral stats).
 3. **Phase 3:** Activate "Gossip Protocol" (Agent-to-Agent viral spread).
+
+## 🧪 Dev quickstart
+
+Backend lives in `backend/`.
+
+```bash
+# install deps
+make backend-install
+
+# run tests / lint
+make backend-test
+make backend-lint
+```
