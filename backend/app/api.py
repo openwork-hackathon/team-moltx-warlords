@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 
 from .db import get_session
@@ -18,8 +20,13 @@ def create_agent(agent: Agent, session: Session = Depends(get_session)) -> Agent
 
 
 @router.get("/agents", response_model=list[Agent])
-def list_agents(session: Session = Depends(get_session)) -> list[Agent]:
-    return list(session.exec(select(Agent).order_by(Agent.id.desc())).all())
+def list_agents(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    session: Session = Depends(get_session),
+) -> list[Agent]:
+    stmt = select(Agent).order_by(Agent.id.desc()).offset(offset).limit(limit)
+    return list(session.exec(stmt).all())
 
 
 @router.get("/agents/{agent_id}", response_model=Agent)
@@ -43,10 +50,16 @@ def create_post(post: Post, session: Session = Depends(get_session)) -> Post:
 
 
 @router.get("/posts", response_model=list[Post])
-def list_posts(agent_id: int = None, session: Session = Depends(get_session)) -> list[Post]:
+def list_posts(
+    agent_id: Optional[int] = None,
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    session: Session = Depends(get_session),
+) -> list[Post]:
     stmt = select(Post).order_by(Post.id.desc())
     if agent_id is not None:
         stmt = stmt.where(Post.agent_id == agent_id)
+    stmt = stmt.offset(offset).limit(limit)
     return list(session.exec(stmt).all())
 
 
@@ -63,8 +76,10 @@ def create_event(event: MetricEvent, session: Session = Depends(get_session)) ->
 
 @router.get("/events", response_model=list[MetricEvent])
 def list_events(
-    agent_id: int = None,
-    kind: str = None,
+    agent_id: Optional[int] = None,
+    kind: Optional[str] = None,
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
     session: Session = Depends(get_session),
 ) -> list[MetricEvent]:
     stmt = select(MetricEvent).order_by(MetricEvent.id.desc())
@@ -73,4 +88,5 @@ def list_events(
     if kind is not None:
         stmt = stmt.where(MetricEvent.kind == kind)
 
+    stmt = stmt.offset(offset).limit(limit)
     return list(session.exec(stmt).all())

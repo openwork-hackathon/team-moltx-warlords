@@ -52,3 +52,30 @@ def test_unknown_agent_rejected(tmp_path, monkeypatch):
 
         r = client.post("/api/events", json={"agent_id": 999, "kind": "like", "value": 1})
         assert r.status_code == 400
+
+
+def test_list_endpoints_support_pagination(tmp_path, monkeypatch):
+    db_path = tmp_path / "test.db"
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")
+
+    app = create_app()
+    with TestClient(app) as client:
+        # create a few agents
+        for i in range(5):
+            r = client.post(
+                "/api/agents",
+                json={"handle": f"warlord-{i}", "display_name": f"Warlord {i}"},
+            )
+            assert r.status_code == 200
+
+        r = client.get("/api/agents?limit=2&offset=0")
+        assert r.status_code == 200
+        assert len(r.json()) == 2
+
+        r = client.get("/api/agents?limit=2&offset=2")
+        assert r.status_code == 200
+        assert len(r.json()) == 2
+
+        # guardrails
+        assert client.get("/api/agents?limit=0").status_code == 422
+        assert client.get("/api/agents?offset=-1").status_code == 422
