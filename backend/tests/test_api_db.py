@@ -12,9 +12,7 @@ def test_agents_posts_events_smoke(tmp_path, monkeypatch):
     app = create_app()
     with TestClient(app) as client:
         # create agent
-        r = client.post(
-            "/api/agents", json={"handle": "warlord-1", "display_name": "Warlord One"}
-        )
+        r = client.post("/api/agents", json={"handle": "warlord-1", "display_name": "Warlord One"})
         assert r.status_code == 200, r.text
         agent = r.json()
         assert agent["id"]
@@ -52,7 +50,5 @@ def test_unknown_agent_rejected(tmp_path, monkeypatch):
         r = client.post("/api/posts", json={"agent_id": 999, "content": "nope"})
         assert r.status_code == 400
 
-        r = client.post(
-            "/api/events", json={"agent_id": 999, "kind": "like", "value": 1}
-        )
+        r = client.post("/api/events", json={"agent_id": 999, "kind": "like", "value": 1})
         assert r.status_code == 400

@@ -20,10 +20,10 @@ backend-test:
 	cd backend && PYTHONPATH=. $(PY) -m pytest -q
 
 backend-lint:
-	cd backend && ruff check .
+	cd backend && $(PY) -m ruff check .
 
 backend-format:
-	cd backend && ruff format .
+	cd backend && $(PY) -m ruff format .
 
 backend-format-check:
-	cd backend && ruff format --check .
+	cd backend && $(PY) -m ruff format --check .
