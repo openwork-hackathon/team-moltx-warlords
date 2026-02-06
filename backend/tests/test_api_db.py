@@ -16,6 +16,20 @@ def test_db_check(tmp_path, monkeypatch):
         assert r.json()["ok"] is True
 
 
+def test_readyz_includes_env_and_ts(tmp_path, monkeypatch):
+    db_path = tmp_path / "test.db"
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")
+
+    app = create_app()
+    with TestClient(app) as client:
+        r = client.get("/api/readyz")
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["ok"] is True
+        assert body["env"]
+        assert body["ts"]
+
+
 def test_agents_posts_events_smoke(tmp_path, monkeypatch):
     db_path = tmp_path / "test.db"
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")

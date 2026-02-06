@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -7,6 +8,7 @@ from sqlmodel import Session, select
 
 from .db import get_session
 from .models import Agent, MetricEvent, Post
+from .settings import get_settings
 
 router = APIRouter(prefix="/api")
 
@@ -21,6 +23,22 @@ def db_check(session: Session = Depends(get_session)) -> dict:
     # Run a trivial query to force a connection + ensure schema is initialized.
     session.exec(select(Agent.id).limit(1)).first()
     return {"ok": True}
+
+
+@router.get("/readyz")
+def readyz(session: Session = Depends(get_session)) -> dict:
+    """Readiness endpoint.
+
+    Like /healthz, but also verifies DB connectivity.
+    """
+
+    session.exec(select(Agent.id).limit(1)).first()
+    settings = get_settings()
+    return {
+        "ok": True,
+        "env": settings.ENV,
+        "ts": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 @router.post("/agents", response_model=Agent)
