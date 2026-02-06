@@ -5,6 +5,17 @@ from fastapi.testclient import TestClient
 from app.main import create_app
 
 
+def test_db_check(tmp_path, monkeypatch):
+    db_path = tmp_path / "test.db"
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")
+
+    app = create_app()
+    with TestClient(app) as client:
+        r = client.get("/api/db-check")
+        assert r.status_code == 200, r.text
+        assert r.json()["ok"] is True
+
+
 def test_agents_posts_events_smoke(tmp_path, monkeypatch):
     db_path = tmp_path / "test.db"
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")

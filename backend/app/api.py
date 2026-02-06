@@ -11,6 +11,18 @@ from .models import Agent, MetricEvent, Post
 router = APIRouter(prefix="/api")
 
 
+@router.get("/db-check")
+def db_check(session: Session = Depends(get_session)) -> dict:
+    """Cheap DB connectivity check (read-only).
+
+    Useful for readiness checks that want to verify DB is reachable in addition to /healthz.
+    """
+
+    # Run a trivial query to force a connection + ensure schema is initialized.
+    session.exec(select(Agent.id).limit(1)).first()
+    return {"ok": True}
+
+
 @router.post("/agents", response_model=Agent)
 def create_agent(agent: Agent, session: Session = Depends(get_session)) -> Agent:
     session.add(agent)
