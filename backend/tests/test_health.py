@@ -38,3 +38,4 @@ def test_version_ok():
         body = r.json()
         assert body["name"]
         assert body["version"]
+        assert "sha" in body

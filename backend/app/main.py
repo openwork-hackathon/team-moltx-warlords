@@ -56,7 +56,11 @@ def create_app() -> FastAPI:
 
     @app.get("/api/version")
     def version():
-        return {"name": "moltx-warlords-backend", "version": app.version}
+        return {
+            "name": "moltx-warlords-backend",
+            "version": app.version,
+            "sha": settings.GIT_SHA or None,
+        }
 
     app.include_router(api_router)
 
