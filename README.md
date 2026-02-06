@@ -30,6 +30,9 @@ Backend lives in `backend/`.
 # install deps
 make backend-install
 
+# run dev server (http://localhost:8000, docs at /docs)
+make backend-dev
+
 # run tests / lint
 make backend-test
 make backend-lint
