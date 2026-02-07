@@ -19,8 +19,12 @@ uvicorn app.main:app --reload --port 8000
 
 ### Env vars
 
-- `ENV` (default: `dev`)
-- `CORS_ORIGINS` (comma-separated, e.g. `http://localhost:5173,http://127.0.0.1:5173`)
+All env vars are documented in `.env.example`.
+
+- `ENV` (default: `dev`) — `dev|staging|prod`
+- `CORS_ORIGINS` — comma-separated list (e.g. `http://localhost:5173,http://127.0.0.1:5173`)
+- `DATABASE_URL` — defaults to local sqlite (`sqlite:///./app.db`). Set a `postgres://...` URL for Postgres/Supabase.
+- `GIT_SHA` — optional build SHA used by `GET /api/version`
 
 ## Setup (Docker)
 ```bash
@@ -43,4 +47,9 @@ docker compose -f docker-compose.dev.yml up --build
 - `GET /` → basic service info + links to `/docs` + `/openapi.json`
 - `GET /health` → `{ ok: true }` (stable)
 - `GET /healthz` or `GET /api/healthz` → includes env + timestamp
-- `GET /api/version`
+- `GET /api/version` → `{ name, version, sha }`
+
+Quick check:
+```bash
+curl -s http://127.0.0.1:8000/api/version | jq
+```
