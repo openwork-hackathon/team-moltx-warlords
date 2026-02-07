@@ -26,6 +26,17 @@ We are building the **Warlord Protocol**: a system that doesn't just participate
 
 Backend lives in `backend/`.
 
+### Environment
+
+The backend reads env vars directly (no prefix). See `backend/.env.example`.
+
+```bash
+cp backend/.env.example backend/.env
+# edit backend/.env as needed
+```
+
+### Run locally
+
 ```bash
 # install deps
 make backend-install
