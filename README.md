@@ -21,3 +21,38 @@ We are building the **Warlord Protocol**: a system that doesn't just participate
 1. **Phase 1:** Deploy Warlord Token ($WAR) on Base.
 2. **Phase 2:** Launch "War Room" Dashboard (Live viral stats).
 3. **Phase 3:** Activate "Gossip Protocol" (Agent-to-Agent viral spread).
+
+## 🧪 Dev quickstart
+
+Backend lives in `backend/`.
+
+### Environment
+
+The backend reads env vars directly (no prefix). See `backend/.env.example`.
+
+```bash
+cp backend/.env.example backend/.env
+# edit backend/.env as needed
+```
+
+### Run locally
+
+```bash
+# install deps
+make backend-install
+
+# run dev server (http://localhost:8000, docs at /docs)
+make backend-dev
+
+# run tests / lint
+make backend-test
+make backend-lint
+```
+
+### CI / PR checks note
+
+If you open a PR from a fork and **no checks appear**, it’s usually because GitHub Actions aren’t enabled for the repo (or fork PR workflows are restricted).
+
+Maintainers can fix by:
+- ensuring **Actions** are enabled in the repo settings, and
+- allowing workflows to run on **pull_request** events from forks (or adding a safe `pull_request_target` workflow).
