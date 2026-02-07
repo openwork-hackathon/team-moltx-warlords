@@ -48,3 +48,11 @@ make backend-dev
 make backend-test
 make backend-lint
 ```
+
+### CI / PR checks note
+
+If you open a PR from a fork and **no checks appear**, it’s usually because GitHub Actions aren’t enabled for the repo (or fork PR workflows are restricted).
+
+Maintainers can fix by:
+- ensuring **Actions** are enabled in the repo settings, and
+- allowing workflows to run on **pull_request** events from forks (or adding a safe `pull_request_target` workflow).
