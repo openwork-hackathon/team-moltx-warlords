@@ -10,12 +10,28 @@ on:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
 
+  # For fork PRs, maintainers may have Actions disabled or set to "Require approval".
+  # This event lets maintainers opt into running CI on fork PRs while keeping permissions minimal.
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+permissions:
+  contents: read
+
 jobs:
   tests:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # For pull_request_target, default ref is the base branch. We want the PR head.
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
